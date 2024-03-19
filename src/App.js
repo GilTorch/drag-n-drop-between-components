@@ -1,5 +1,5 @@
 import { useState, useRef  } from 'react';
-
+/**  */
 const App = () => {
 
   const [peoples, setPeoples] = useState([
@@ -22,11 +22,6 @@ const App = () => {
   const draggedOverPerson = useRef({ listPosition: 0, itemPosition: 0 });
 
   const handleSort = () => {
-    // const peopleClone = [...people];
-    // const temp = peopleClone[dragPerson.current];
-    // peopleClone[dragPerson.current] = peopleClone[draggedOverPerson.current]
-    // peopleClone[draggedOverPerson.current] = temp;
-    // setPeople(peopleClone);
 
     const peoplesClone = [ ...peoples];
     const temp = peoplesClone[dragPerson.current.listPosition][dragPerson.current.itemPosition];
