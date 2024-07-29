@@ -21,13 +21,27 @@ const App = () => {
   const dragPerson = useRef({ listPosition: 0, itemPosition: 0 });
   const draggedOverPerson = useRef({ listPosition: 0, itemPosition: 0 });
 
+  const draggedOverPersonList = useRef(0);
+
   const handleSort = () => {
 
-    const peoplesClone = [ ...peoples];
-    const temp = peoplesClone[dragPerson.current.listPosition][dragPerson.current.itemPosition];
-    peoplesClone[dragPerson.current.listPosition][dragPerson.current.itemPosition] = peoplesClone[draggedOverPerson.current.listPosition][draggedOverPerson.current.itemPosition]
-    peoplesClone[draggedOverPerson.current.listPosition][draggedOverPerson.current.itemPosition] = temp;
 
+    const peoplesClone = [ ...peoples];
+    if(draggedOverPersonList.current === dragPerson.current.listPosition ){
+    
+      const temp = peoplesClone[dragPerson.current.listPosition][dragPerson.current.itemPosition];
+      peoplesClone[dragPerson.current.listPosition][dragPerson.current.itemPosition] = peoplesClone[draggedOverPerson.current.listPosition][draggedOverPerson.current.itemPosition]
+      peoplesClone[draggedOverPerson.current.listPosition][draggedOverPerson.current.itemPosition] = temp;
+  
+
+    } else {
+
+      const peoplesClone = [ ...peoples];
+      const temp = peoplesClone[dragPerson.current.listPosition][dragPerson.current.itemPosition];
+      peoplesClone[draggedOverPersonList.current].push(temp);
+      peoplesClone[dragPerson.current.listPosition].splice(dragPerson.current.itemPosition, 1);
+       
+    }
     setPeoples(peoplesClone)
     
   }
@@ -38,7 +52,12 @@ const App = () => {
           <h2>List</h2>
           <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
             {peoples.map((people, peopleIndex) => (
-              <div key={peopleIndex} style={{border: "1px solid black", minHeight: "40vh", minWidth: "10vw"}}>
+              <div 
+                onDragEnter={() => {
+                  draggedOverPersonList.current = peopleIndex;
+                }}
+
+                key={peopleIndex} style={{border: "1px solid black", minHeight: "40vh", minWidth: "10vw"}}>
                  {people.map((person, personIndex) => (
                     <div 
                     style={{width: 'max-content',padding: '10px 5px', marginBottom: '10px', backgroundColor:"#eee"}} key={personIndex} 
