@@ -3,7 +3,7 @@ import { peopleData} from './data'
 /**  */
 const VanillaDrag = () => {
 
-  const [peoples, setPeoples] = useState(peopleData);
+  const [peoples, setPeoples] = useState([...peopleData]);
  
 
   const dragPerson = useRef({ listPosition: 0, itemPosition: 0 });
@@ -42,11 +42,11 @@ const VanillaDrag = () => {
                 onDragEnter={() => {
                   draggedOverPersonList.current = peopleIndex;
                 }}
-
+                onDragOver={e => e.preventDefault()}
                 key={peopleIndex} style={{border: "1px solid black", minHeight: "40vh", minWidth: "10vw"}}>
                  {people.map((person, personIndex) => (
                     <div 
-                    style={{width: 'max-content',padding: '10px 5px', marginBottom: '10px', backgroundColor:"#eee"}} key={personIndex} 
+                      style={{width: 'max-content',padding: '10px 5px', marginBottom: '10px', backgroundColor:"#eee"}} key={personIndex} 
                       draggable              
                       onDragStart={() => (dragPerson.current = { listPosition: peopleIndex, itemPosition: personIndex })} 
                       onDragEnter={() => (draggedOverPerson.current = { listPosition: peopleIndex, itemPosition: personIndex })}
