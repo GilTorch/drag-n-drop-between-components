@@ -1,51 +1,49 @@
 import { useState, useRef } from "react";
-import { peopleData } from "./data";
 /**  */
-const VanillaDrag = () => {
-  const [peoples, setPeoples] = useState([...peopleData]);
+const VanillaDrag = ({ list }) => {
+  const [week, setWeek] = useState([...list]);
   const [isItemIsDragging, setIsItemDragging] = useState(false);
-  const dragPerson = useRef({ listPosition: 0, itemPosition: 0 });
-  const draggedOverPerson = useRef({ listPosition: 0, itemPosition: 0 });
-  const dragPersonList = useRef(0);
-  const draggedOverPersonList = useRef(0);
+  const draggedSection = useRef({ dayIndex: 0, sectionIndex: 0 });
+  const draggedOverSection = useRef({ dayIndex: 0, sectionIndex: 0 });
+  const draggedDay = useRef(0);
+  const draggedOverDay = useRef(0);
 
-  const onPersonListDragEnd = () => {
-    const peoplesClone = [...peoples];
-    const temp = peoplesClone[dragPersonList.current];
-    peoplesClone[dragPersonList.current] =
-      peoplesClone[draggedOverPersonList.current];
-    peoplesClone[draggedOverPersonList.current] = temp;
-    setPeoples(peoplesClone);
+  const onDayDragEnd = () => {
+    const weekClone = [...week];
+    const temp = weekClone[draggedDay.current];
+    weekClone[draggedDay.current] = weekClone[draggedOverDay.current];
+    weekClone[draggedOverDay.current] = temp;
+    setWeek(weekClone);
   };
 
-  const onPersonDragEnd = () => {
-    const peoplesClone = [...peoples];
-    if (draggedOverPersonList.current === dragPerson.current.listPosition) {
+  const onSectionDragEnd = () => {
+    const weekClone = [...week];
+    if (draggedOverDay.current === draggedSection.current.dayIndex) {
       const temp =
-        peoplesClone[dragPerson.current.listPosition][
-          dragPerson.current.itemPosition
+        weekClone[draggedSection.current.dayIndex][
+          draggedSection.current.sectionIndex
         ];
-      peoplesClone[dragPerson.current.listPosition][
-        dragPerson.current.itemPosition
+      weekClone[draggedSection.current.dayIndex][
+        draggedSection.current.sectionIndex
       ] =
-        peoplesClone[draggedOverPerson.current.listPosition][
-          draggedOverPerson.current.itemPosition
+        weekClone[draggedOverSection.current.dayIndex][
+          draggedOverSection.current.sectionIndex
         ];
-      peoplesClone[draggedOverPerson.current.listPosition][
-        draggedOverPerson.current.itemPosition
+      weekClone[draggedOverSection.current.dayIndex][
+        draggedOverSection.current.sectionIndex
       ] = temp;
     } else {
       const temp =
-        peoplesClone[dragPerson.current.listPosition][
-          dragPerson.current.itemPosition
+        weekClone[draggedSection.current.dayIndex][
+          draggedSection.current.sectionIndex
         ];
-      peoplesClone[draggedOverPersonList.current].push(temp);
-      peoplesClone[dragPerson.current.listPosition].splice(
-        dragPerson.current.itemPosition,
+      weekClone[draggedOverDay.current].push(temp);
+      weekClone[draggedSection.current.dayIndex].splice(
+        draggedSection.current.sectionIndex,
         1
       );
     }
-    setPeoples(peoplesClone);
+    setWeek(weekClone);
   };
 
   return (
@@ -57,29 +55,30 @@ const VanillaDrag = () => {
           alignItems: "center",
         }}
       >
-        {peoples.map((people, peopleIndex) => (
+        {week.map((day, dayIndex) => (
           <div
-            key={peopleIndex}
+            key={dayIndex}
             draggable={!isItemIsDragging}
             onDragStart={() => {
-              dragPersonList.current = peopleIndex;
+              draggedDay.current = dayIndex;
             }}
             onDragEnd={() => {
               if (!isItemIsDragging) {
-                onPersonListDragEnd();
+                onDayDragEnd();
               }
             }}
             onDragEnter={() => {
-              draggedOverPersonList.current = peopleIndex;
+              draggedOverDay.current = dayIndex;
             }}
             onDragOver={(e) => e.preventDefault()}
             style={{
               border: "1px solid black",
-              minHeight: "40vh",
+              height: "40vh",
               minWidth: "10vw",
+              overflowY: "auto",
             }}
           >
-            {people.map((person, personIndex) => (
+            {day.map((section, sectionIndex) => (
               <div
                 style={{
                   width: "max-content",
@@ -87,28 +86,28 @@ const VanillaDrag = () => {
                   marginBottom: "10px",
                   backgroundColor: "#eee",
                 }}
-                key={personIndex}
+                key={sectionIndex}
                 draggable
                 onDragStart={() => {
                   setIsItemDragging(true);
-                  dragPerson.current = {
-                    listPosition: peopleIndex,
-                    itemPosition: personIndex,
+                  draggedSection.current = {
+                    dayIndex,
+                    sectionIndex,
                   };
                 }}
                 onDragEnter={() => {
-                  draggedOverPerson.current = {
-                    listPosition: peopleIndex,
-                    itemPosition: personIndex,
+                  draggedOverSection.current = {
+                    dayIndex,
+                    sectionIndex,
                   };
                 }}
                 onDragEnd={() => {
                   setIsItemDragging(false);
-                  onPersonDragEnd();
+                  onSectionDragEnd();
                 }}
                 onDragOver={(e) => e.preventDefault()}
               >
-                <p>{person.name}</p>
+                <p>{section.name}</p>
               </div>
             ))}
           </div>

@@ -1,13 +1,14 @@
 import React from "react";
 import VanillaDrag from "./VanillaDrag";
+import { weeks } from "./data";
 
 const App = () => {
   return (
-    <div>
-      {new Array(3).fill(undefined).map((_, index) => (
+    <div style={{ padding: "24px" }}>
+      {weeks.map((week, index) => (
         <div key={index}>
           <h2>List {index}</h2>
-          <VanillaDrag />
+          <VanillaDrag list={week} />
         </div>
       ))}
     </div>
