@@ -1,11 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { weeks as weeksData } from "./data";
 import Day from "./Day/Day";
 
 const App = () => {
   const [weeks, setWeeks] = useState([...weeksData]);
   const [isItemIsDragging, setIsItemDragging] = useState(false);
-  // const draggedWeek = useRef(0);
   const [draggedOverWeek, setDraggedOverWeek] = useState(0);
   const [draggedDay, setDraggedDay] = useState({ weekIndex: 0, dayIndex: 0 });
   const [draggedOverDay, setDraggedOverDay] = useState({
@@ -34,10 +33,6 @@ const App = () => {
 
   const onSectionDragEnd = () => {
     const weeksClone = [...weeks];
-
-    // section on the same days and same week => draggeg Section weekIndex === draggedOverWeekIndex and draggedOverDayIndex === draggedOverSectionIndex
-    // section on different weeks
-
     if (
       draggedOverWeek === draggedSection.weekIndex &&
       draggedOverDay.dayIndex === draggedSection.dayIndex
