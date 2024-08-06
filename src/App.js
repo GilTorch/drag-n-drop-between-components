@@ -6,11 +6,18 @@ const App = () => {
   const [weeks, setWeeks] = useState([...weeksData]);
   const [isItemIsDragging, setIsItemDragging] = useState(false);
   // const draggedWeek = useRef(0);
-  const draggedOverWeek = useRef(0);
-  const draggedDay = useRef({ weekIndex: 0, dayIndex: 0 });
-  const draggedOverDay = useRef({ weekIndex: 0, dayIndex: 0 });
-  const draggedSection = useRef({ weekIndex: 0, dayIndex: 0, sectionIndex: 0 });
-  const draggedOverSection = useRef({
+  const [draggedOverWeek, setDraggedOverWeek] = useState(0);
+  const [draggedDay, setDraggedDay] = useState({ weekIndex: 0, dayIndex: 0 });
+  const [draggedOverDay, setDraggedOverDay] = useState({
+    weekIndex: 0,
+    dayIndex: 0,
+  });
+  const [draggedSection, setDraggedSection] = useState({
+    weekIndex: 0,
+    dayIndex: 0,
+    sectionIndex: 0,
+  });
+  const [draggedOverSection, setDraggedOverSection] = useState({
     weekIndex: 0,
     dayIndex: 0,
     sectionIndex: 0,
@@ -18,49 +25,46 @@ const App = () => {
 
   const onDayDragEnd = () => {
     const weeksClone = [...weeks];
-    const temp =
-      weeksClone[draggedDay.current.weekIndex][draggedDay.current.dayIndex];
-    weeksClone[draggedDay.current.weekIndex][draggedDay.current.dayIndex] =
-      weeksClone[draggedOverDay.current.weekIndex][
-        draggedOverDay.current.dayIndex
-      ];
-    weeksClone[draggedOverDay.current.weekIndex][
-      draggedOverDay.current.dayIndex
-    ] = temp;
+    const temp = weeksClone[draggedDay.weekIndex][draggedDay.dayIndex];
+    weeksClone[draggedDay.weekIndex][draggedDay.dayIndex] =
+      weeksClone[draggedOverDay.weekIndex][draggedOverDay.dayIndex];
+    weeksClone[draggedOverDay.weekIndex][draggedOverDay.dayIndex] = temp;
     setWeeks(weeksClone);
   };
 
   const onSectionDragEnd = () => {
     const weeksClone = [...weeks];
+
+    // section on the same days => draggeg Section weekIndex === draggedOverWeekIndex and draggedOverDayIndex === draggedOverSectionIndex
+
     if (
-      draggedOverDay.current.dayIndex === draggedSection.current.dayIndex &&
-      draggedOverWeek.current === draggedSection.current.weekIndex
+      draggedOverDay.dayIndex === draggedSection.dayIndex &&
+      draggedOverWeek === draggedSection.weekIndex
     ) {
       const temp =
-        weeksClone[draggedSection.current.weekIndex][
-          draggedSection.current.dayIndex
-        ][draggedSection.current.sectionIndex];
-      weeksClone[draggedSection.current.weekIndex][
-        draggedSection.current.dayIndex
-      ][draggedSection.current.sectionIndex] =
-        weeksClone[draggedOverSection.current.weekIndex][
-          draggedOverSection.current.dayIndex
-        ][draggedOverSection.current.sectionIndex];
-      weeksClone[draggedOverSection.current.weekIndex][
-        draggedOverSection.current.dayIndex
-      ][draggedOverSection.current.sectionIndex] = temp;
+        weeksClone[draggedSection.weekIndex][draggedSection.dayIndex][
+          draggedSection.sectionIndex
+        ];
+      weeksClone[draggedSection.weekIndex][draggedSection.dayIndex][
+        draggedSection.sectionIndex
+      ] =
+        weeksClone[draggedOverSection.weekIndex][draggedOverSection.dayIndex][
+          draggedOverSection.sectionIndex
+        ];
+      weeksClone[draggedOverSection.weekIndex][draggedOverSection.dayIndex][
+        draggedOverSection.sectionIndex
+      ] = temp;
     } else {
       const temp =
-        weeksClone[draggedSection.current.weekIndex][
-          draggedSection.current.dayIndex
-        ][draggedSection.current.sectionIndex];
+        weeksClone[draggedSection.weekIndex][draggedSection.dayIndex][
+          draggedSection.sectionIndex
+        ];
 
-      weeksClone[draggedDay.current.weekIndex][
-        draggedOverDay.current.dayIndex
-      ].push(temp);
-      weeksClone[draggedDay.current.weekIndex][
-        draggedDay.current.dayIndex
-      ].splice(draggedSection.current.sectionIndex, 1);
+      weeksClone[draggedDay.weekIndex][draggedOverDay.dayIndex].push(temp);
+      weeksClone[draggedDay.weekIndex][draggedDay.dayIndex].splice(
+        draggedSection.sectionIndex,
+        1
+      );
     }
     setWeeks(weeksClone);
   };
@@ -72,7 +76,7 @@ const App = () => {
           key={weekIndex}
           draggable={false}
           onDragEnter={() => {
-            draggedOverWeek.current = weekIndex;
+            setDraggedOverWeek(weekIndex);
           }}
           onDragOver={(e) => e.preventDefault()}
           className="all-lists"
@@ -91,7 +95,7 @@ const App = () => {
                   day={day}
                   draggable={!isItemIsDragging}
                   onDragStart={() => {
-                    draggedDay.current = { weekIndex, dayIndex };
+                    setDraggedDay({ weekIndex, dayIndex });
                   }}
                   onDragEnd={() => {
                     if (!isItemIsDragging) {
@@ -99,24 +103,24 @@ const App = () => {
                     }
                   }}
                   onDragEnter={() => {
-                    draggedOverDay.current = { weekIndex, dayIndex };
+                    setDraggedOverDay({ weekIndex, dayIndex });
                   }}
                   onDragOver={(e) => e.preventDefault()}
                   sectionDraggable={true}
                   onDragSectionStart={(sectionIndex) => {
                     setIsItemDragging(true);
-                    draggedSection.current = {
+                    setDraggedSection({
                       weekIndex,
                       dayIndex,
                       sectionIndex,
-                    };
+                    });
                   }}
                   onDragSectionEnter={(sectionIndex) => {
-                    draggedOverSection.current = {
+                    setDraggedOverSection({
                       weekIndex,
                       dayIndex,
                       sectionIndex,
-                    };
+                    });
                   }}
                   onDragSectionEnd={() => {
                     setIsItemDragging(false);
