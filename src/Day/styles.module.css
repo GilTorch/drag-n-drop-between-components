@@ -1,0 +1,6 @@
+.container {
+    border: 1px solid black;
+    height: 40vh;
+    min-width: 10vw;
+    overflow-y: auto;
+}
