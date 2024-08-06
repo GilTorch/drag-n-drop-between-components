@@ -35,11 +35,12 @@ const App = () => {
   const onSectionDragEnd = () => {
     const weeksClone = [...weeks];
 
-    // section on the same days => draggeg Section weekIndex === draggedOverWeekIndex and draggedOverDayIndex === draggedOverSectionIndex
+    // section on the same days and same week => draggeg Section weekIndex === draggedOverWeekIndex and draggedOverDayIndex === draggedOverSectionIndex
+    // section on different weeks
 
     if (
-      draggedOverDay.dayIndex === draggedSection.dayIndex &&
-      draggedOverWeek === draggedSection.weekIndex
+      draggedOverWeek === draggedSection.weekIndex &&
+      draggedOverDay.dayIndex === draggedSection.dayIndex
     ) {
       const temp =
         weeksClone[draggedSection.weekIndex][draggedSection.dayIndex][
@@ -55,13 +56,14 @@ const App = () => {
         draggedOverSection.sectionIndex
       ] = temp;
     } else {
+      // same week different days
       const temp =
         weeksClone[draggedSection.weekIndex][draggedSection.dayIndex][
           draggedSection.sectionIndex
         ];
 
-      weeksClone[draggedDay.weekIndex][draggedOverDay.dayIndex].push(temp);
-      weeksClone[draggedDay.weekIndex][draggedDay.dayIndex].splice(
+      weeksClone[draggedOverDay.weekIndex][draggedOverDay.dayIndex].push(temp);
+      weeksClone[draggedSection.weekIndex][draggedDay.dayIndex].splice(
         draggedSection.sectionIndex,
         1
       );
